@@ -177,9 +177,12 @@ def lora_Conv2d_forward(self, input):
 def list_available_loras():
     available_loras.clear()
 
-    os.makedirs(lora_dir, exist_ok=True)
+    os.makedirs(shared.cmd_opts.lora_dir, exist_ok=True)
 
-    candidates = glob.glob(os.path.join(lora_dir, '**/*.pt'), recursive=True) + glob.glob(os.path.join(lora_dir, '**/*.safetensors'), recursive=True)
+    candidates = \
+        glob.glob(os.path.join(shared.cmd_opts.lora_dir, '**/*.pt'), recursive=True) + \
+        glob.glob(os.path.join(shared.cmd_opts.lora_dir, '**/*.safetensors'), recursive=True) + \
+        glob.glob(os.path.join(shared.cmd_opts.lora_dir, '**/*.ckpt'), recursive=True)
 
     for filename in sorted(candidates):
         if os.path.isdir(filename):
@@ -190,9 +193,7 @@ def list_available_loras():
         available_loras[name] = LoraOnDisk(name, filename)
 
 
-lora_dir = os.path.join(shared.models_path, "Lora")
 available_loras = {}
 loaded_loras = []
 
 list_available_loras()
-
